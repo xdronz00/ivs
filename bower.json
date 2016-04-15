@@ -1,0 +1,23 @@
+{
+  "name": "ivs",
+  "description": "Simple calculator",
+  "main": "index.html",
+  "authors": [
+    "Michaela Dronzekova",
+    "Jakub Fajkus",
+    "David Czernin",
+    "Do Long Thanh"
+  ],
+  "license": "GNU General Public Licence",
+  "keywords": [
+    "calculator"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
