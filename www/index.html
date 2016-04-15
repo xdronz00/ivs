@@ -1,0 +1,102 @@
+<!--Copyright 2016 Jakub Fajkus, Miki Dronzeková, David Czernin, Đỗ Long Thành-->
+
+<!--This file is part of Kalkulacka.-->
+
+<!--Kalkulacka is free software: you can redistribute it and/or modify-->
+<!--it under the terms of the GNU General Public License as published by-->
+<!--the Free Software Foundation, either version 3 of the License, or-->
+<!--(at your option) any later version.-->
+
+<!--Kalkulacka is distributed in the hope that it will be useful,-->
+<!--but WITHOUT ANY WARRANTY; without even the implied warranty of-->
+<!--MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the-->
+<!--GNU General Public License for more details.-->
+
+<!--You should have received a copy of the GNU General Public License-->
+<!--along with Kalkulacka.  If not, see <http://www.gnu.org/licenses/>.-->
+
+<html lang="cs">
+<head>
+    <title>Nefunkční kalkulačka</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width, user-scalable=no">
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,300,100' rel='stylesheet' type='text/css'>
+
+
+
+    <link rel="apple-touch-icon" sizes="57x57" href="src/img/favicons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="src/img/favicons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="src/img/favicons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="src/img/favicons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="src/img/favicons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="src/img/favicons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="src/img/favicons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="src/img/favicons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="src/img/favicons/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="src/img/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="src/img/favicons/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="src/img/favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="src/img/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="src/img/favicons/manifest.json">
+    <meta name="apple-mobile-web-app-title" content="Nefunkcni">
+    <meta name="application-name" content="Nefunkcni">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="src/img//favicons/mstile-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="src/css/style.css">
+    <script src="js/math.js"></script>
+    <script src="js/mathObject.js"></script>
+    <script src="js/Core.js"></script>
+    <script src="js/clickEvents.js"></script>
+</head>
+<body>
+
+<div id="calc-container">
+
+    <input type="hidden" name="exp" id="expH" value="" />
+    <input type="text" name="exp" id="exp" value="" disabled="disabled" />
+
+    <input type="hidden" name="exp" id="resultH" value="" />
+    <input type="text" name="exp" id="result" value="" disabled="disabled" />
+
+
+    <div class="numbers">
+        <button value="9" onclick="numberClicked(this)">9</button>
+        <button value="8" onclick="numberClicked(this)">8</button>
+        <button value="7" onclick="numberClicked(this)">7</button>
+        <button value="6" onclick="numberClicked(this)">6</button>
+        <button value="5" onclick="numberClicked(this)">5</button>
+        <button value="4" onclick="numberClicked(this)">4</button>
+        <button value="3" onclick="numberClicked(this)">3</button>
+        <button value="2" onclick="numberClicked(this)">2</button>
+        <button value="1" onclick="numberClicked(this)">1</button>
+        <button value="0" onclick="numberClicked(this)" id="zero">0</button>
+        <button onclick="operationClicked(this)" id="equal" value="equal">=</button>
+        <button onclick="operationClicked(this)" value="dot" id="dot">.</button>
+    </div>
+
+    <div class="operations">
+        <div class="top">
+            <button onclick="operationClicked(this)" value="modulo" id="modulo">%</button>
+            <button onclick="operationClicked(this)" value="factorial" id="factorial">!</button>
+            <button onclick="operationClicked(this)" value="power" id="power">^</button>
+            <!--
+            <button onClick="operationClicked(this)" value="log" id="log">log</button>
+            -->
+            <button onclick="operationClicked(this)" value="clear" id="clear">CE</button>
+        </div>
+
+        <div class="left">
+            <button onclick="operationClicked(this)" value="mul" id="mul">*</button>
+            <button onclick="operationClicked(this)" value="div" id="div">/</button>
+            <button onclick="operationClicked(this)" value="plus" id="plus">+</button>
+            <button onclick="operationClicked(this)" value="minus" id="minus">-</button>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!--Copyright 2016 Jakub Fajkus, Miki Dronzeková, David Czernin, Đỗ Long Thành-->
+
+<!--This file is part of Kalkulacka.-->
+
+<!--Kalkulacka is free software: you can redistribute it and/or modify-->
+<!--it under the terms of the GNU General Public License as published by-->
+<!--the Free Software Foundation, either version 3 of the License, or-->
+<!--(at your option) any later version.-->
+
+<!--Kalkulacka is distributed in the hope that it will be useful,-->
+<!--but WITHOUT ANY WARRANTY; without even the implied warranty of-->
+<!--MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the-->
+<!--GNU General Public License for more details.-->
+
+<!--You should have received a copy of the GNU General Public License-->
+<!--along with Kalkulacka.  If not, see <http://www.gnu.org/licenses/>.-->
+
+<!DOCTYPE html>
+<!--suppress JSUnresolvedFunction, JSUnresolvedVariable -->
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Math tests</title>
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.22.0.css">
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<script src="http://code.jquery.com/qunit/qunit-1.22.0.js"></script>
+<script src="../www/js/math.js"></script>
+<script src="../www/js/Core.js"></script>
+<script src="../www/js/MathObject.js"></script>
+<script>
+
+    //testing function "isNumber"
+    QUnit.test('isNumber', function (assert) {
+        assert.equal(isNumber(0), true);
+        assert.equal(isNumber(2), true);
+        assert.equal(isNumber(24055), true);
+        assert.equal(isNumber(240.55), true);
+        assert.equal(isNumber(-240), true);
+        assert.equal(isNumber(-284.535), true);
+
+        assert.equal(isNumber("string"), false);
+        assert.equal(isNumber(function () {
+        }), false);
+        assert.equal(isNumber("12341"), true);
+        assert.equal(isNumber("123431.3"), true);
+        assert.equal(isNumber("a123431.3"), false);
+        assert.equal(isNumber("123a431.3"), false);
+    });
+
+    //testing function "add"
+    QUnit.test('add', function (assert) {
+        assert.equal(add(1, 1), 2);
+        assert.equal(add(-1.5, 0.25), -1.25);
+        assert.deepEqual(add("a", 4), NaN);
+    });
+
+    //testing function "subtract"
+    QUnit.test('subtract', function (assert) {
+        assert.equal(subtract(5, 3), 2);
+        assert.equal(subtract(3, 8), -5);
+        assert.deepEqual(subtract("a", 4), NaN);
+    });
+
+    //testing function "multiply"
+    QUnit.test('multiplication', function (assert) {
+        assert.equal(multiply(5, 3), 15);
+        assert.equal(multiply(-5, -2), 10);
+        assert.equal(multiply(2, -1), -2);
+        assert.equal(multiply(1.5, 1.5), 2.25);
+        assert.deepEqual(multiply("a", 4), NaN);
+    });
+
+    //testing function "divide"
+    QUnit.test('division', function (assert) {
+        assert.equal(divide(9, 3), 3);
+        assert.equal(divide(-9, -3), 3);
+        assert.equal(divide(-1, 2), -0.5);
+        assert.deepEqual(divide(5, 0), NaN);
+        assert.deepEqual(divide("a", 4), NaN);
+
+    });
+
+    //testing function "factorial"
+    QUnit.test('factorial', function (assert) {
+        assert.equal(factorial(0), 1);
+        assert.equal(factorial(5), 120);
+        assert.deepEqual(factorial(-5), NaN);
+        assert.deepEqual(factorial(1.8), NaN);
+        assert.deepEqual(factorial("a"), NaN);
+    });
+
+    //testing function "power"
+    QUnit.test('power', function (assert) {
+        assert.equal(power(4, 2), 16);
+        assert.equal(power(-5, 3), -125);
+        assert.equal(power(-4, 2), 16);
+        assert.equal(power(4, 0), 1);
+        assert.equal(power(1.5, 2), 2.25);
+        assert.deepEqual(power(0, 0), NaN);
+        assert.deepEqual(power(5, -2), NaN);
+        assert.deepEqual(power(5, 3.2), NaN);
+        assert.deepEqual(power("a", 5), NaN);
+        assert.deepEqual(power(3, "a"), NaN);
+    });
+
+    QUnit.test('modulo', function (assert) {
+        assert.equal(mod(4, 2), 0);
+        assert.equal(mod(5, 3), 2);
+        assert.deepEqual(mod("a", 5), NaN);
+    });
+
+    //*********************Core*********************
+    //Clear the core before each test.
+    QUnit.testStart(function (details) {
+        core = new Core();
+    });
+
+
+    QUnit.test('addNumber adds single number to the array', function (assert) {
+        core.addNumber(4);
+        assert.deepEqual(core.array, [4]);
+    });
+
+    QUnit.test('addNumber adds single number to the array and then adds another number', function (assert) {
+        core.addNumber(4);
+        assert.deepEqual(core.array, [4]);
+
+        core.addNumber(2);
+        assert.deepEqual(core.array, [42]);
+    });
+
+
+    QUnit.test('addNumber throws a message when the argument is not a number', function (assert) {
+        assert.throws(function () {
+            core.addNumber("string");
+        }, function (message) {
+            return message === "Cannot add string as number";
+        });
+    });
+
+
+    QUnit.test('addOperation throws a message when not added after number', function (assert) {
+        assert.throws(function () {
+                    core.addOperation("plus");
+                },
+                function (message) {
+                    return message === "Operation must follow a number.";
+                });
+    });
+
+    QUnit.test('addOperation adds an operation string to array when added after number', function (assert) {
+        core.addNumber(4);
+        core.addOperation("plus");
+
+        assert.deepEqual(core.array, [4, "plus"]);
+    });
+
+    QUnit.test('addOperation adds an operation unary minus', function (assert) {
+        core.addOperation("minus");
+        core.addNumber(4);
+
+        assert.deepEqual(core.array, ["minus", 4]);
+    });
+
+    QUnit.test('addOperation throws a message when trying to add two minuses', function (assert) {
+        assert.throws(function () {
+            core.addOperation("minus");
+            core.addOperation("minus");
+            core.addNumber(4);
+        }, function (message) {
+            return message === "Can not add two same operations";
+        });
+    });
+
+    QUnit.test('addNumber adds a number after operation', function (assert) {
+        core.addNumber(4);
+        core.addOperation("plus");
+        core.addNumber(2);
+
+        assert.deepEqual(core.array, [4, "plus", 2]);
+    });
+
+    QUnit.test('getLastItem returns the last item', function (assert) {
+        core.addNumber(4);
+        assert.equal(core.getLastItem(), 4);
+        core.addOperation("plus");
+        assert.equal(core.getLastItem(), "plus");
+        core.addNumber(2);
+        assert.equal(core.getLastItem(), 2);
+    });
+
+    QUnit.test("calculate simple expression with unary operation -3", function (assert) {
+        core.addOperation("minus");
+        core.addNumber(3);
+        core.calculate();
+        assert.equal(core.getResultString(), "-3");
+    });
+
+    QUnit.test("calculate -3+4", function (assert) {
+        core.addOperation("minus");
+        core.addNumber(3);
+        core.addOperation("plus");
+        core.addNumber(4);
+        core.calculate();
+        assert.equal(core.getResultString(), "1");
+    });
+
+    QUnit.test("calculate simple one operation expressions 2*3", function (assert) {
+        core.addNumber(2);
+        core.addOperation("mul");
+        core.addNumber(3);
+        core.calculate();
+        assert.equal(core.getResultString(), "6");
+    });
+
+    QUnit.test("calculate more complicated two operation expressions 2*32+3", function (assert) {
+        core.addNumber(2);
+        core.addOperation("mul");
+        core.addNumber(32);
+        core.addOperation("plus");
+        core.addNumber(3);
+        core.calculate();
+        assert.equal(core.getResultString(), "67");
+    });
+
+    QUnit.test("calculate more complicated two operation expressions 7*-2", function (assert) {
+        core.addNumber(7);
+        core.addOperation("mul");
+        core.addOperation("minus");
+        core.addNumber(2);
+        core.calculate();
+        assert.equal(core.getResultString(), "-14");
+    });
+
+    QUnit.test("calculate more complicated expression -3+4-6*3", function (assert) {
+        core.addOperation("minus");
+        core.addNumber(3);
+        core.addOperation("plus");
+        core.addNumber(4);
+        core.addOperation("minus");
+        core.addNumber(6);
+        core.addOperation("mul");
+        core.addNumber(3);
+        core.calculate();
+        assert.equal(core.getResultString(), -3 + 4 - 6 * 3);
+    });
+
+    QUnit.test("calculate more complicated expression 40 - 92 x 69 x 37", function (assert) {
+        core.addNumber(40);
+        core.addOperation("minus");
+        core.addNumber(92);
+        core.addOperation("mul");
+        core.addNumber(69);
+        core.addOperation("mul");
+        core.addNumber(37);
+        core.calculate();
+        assert.equal(core.getResultString(), 40 - 92 * 69 * 37);
+    });
+
+    QUnit.test("calculate more complicated expression 94 x 80 - 31 x 36 ", function (assert) {
+        core.addNumber(94);
+        core.addOperation("mul");
+        core.addNumber(80);
+        core.addOperation("minus");
+        core.addNumber(31);
+        core.addOperation("mul");
+        core.addNumber(36);
+        core.calculate();
+        assert.equal(core.getResultString(), 94 * 80 - 31 * 36);
+    });
+
+    QUnit.test("calculate more complicated expression -3! - 5 * 4 / 3 ", function (assert) {
+        core.addOperation("minus");
+        core.addNumber(3);
+        core.addOperation("factorial");
+        core.addOperation("minus");
+        core.addNumber(5);
+        core.addOperation("mul");
+        core.addNumber(4);
+        core.addOperation("div");
+        core.addNumber(7);
+        core.calculate();
+        assert.equal(core.getResultString(), -6 - 5 * 4 / 7);
+    });
+
+    QUnit.test("calculate more complicated expression 93*-2!+87-3 ", function (assert) {
+        core.addNumber(93);
+        core.addOperation("mul");
+        core.addOperation("minus");
+        core.addNumber(2);
+        core.addOperation("factorial");
+        core.addOperation("plus");
+        core.addNumber(87);
+        core.addOperation("minus");
+        core.addNumber(3);
+        core.calculate();
+        assert.equal(core.getResultString(), 93 * -2 + 87 - 3);
+    });
+
+    QUnit.test("calculate more complicated expression -2^3+4 ", function (assert) {
+        core.addOperation("minus");
+        core.addNumber(2);
+        core.addOperation("power");
+        core.addNumber(3);
+        core.addOperation("plus");
+        core.addNumber(4);
+        core.calculate();
+        assert.equal(core.getResultString(), -8 + 4);
+    });
+
+    QUnit.test("calculate more complicated expression 55^2*777-5!/9*303-5 ", function (assert) {
+        core.addNumber(55);
+        core.addOperation("power");
+        core.addNumber(2);
+        core.addOperation("mul");
+        core.addNumber(777);
+        core.addOperation("minus");
+        core.addNumber(5);
+        core.addOperation("factorial");
+        core.addOperation("div");
+        core.addNumber(9);
+        core.addOperation("mul");
+        core.addNumber(303);
+        core.addOperation("minus");
+        core.addNumber(5);
+        core.calculate();
+        assert.equal(core.getResultString(), 2346380);
+    });
+
+
+    QUnit.test("creates number with dot 4.2", function (assert) {
+        core.addNumber(4);
+        core.addDot("dot");
+        core.addNumber(2);
+        core.addNumber(3);
+        core.addNumber(4);
+        core.calculate();
+        assert.equal(core.getResultString(), 4.234);
+    });
+
+    QUnit.test("does not allow to add more same operators without operands", function (assert) {
+        assert.throws(function () {
+            core.addOperation("minus");
+            core.addOperation("minus");
+        }, function (message) {
+            return message == "Can not add two same operations";
+        })
+    });
+
+    QUnit.test("does not allow to add more not same operators without operands", function (assert) {
+        assert.throws(function () {
+            core.addNumber(45);
+            core.addOperation("minus");
+            core.addOperation("plus");
+        }, function (message) {
+            return message == "Operation must follow a number.";
+        })
+    });
+
+</script>
+</body>
+</html>
